@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicar Produto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        header { background-color: #ff6600; color: white; padding: 20px; font-size: 24px; }
+        main { padding: 20px; }
+        form { background: white; padding: 30px; width: 250px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #ff6600; border-radius: 5px; }
+        button { padding: 10px; background: #ff6600; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #e55b00; }
+        .link-voltar { display: block; margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+  <a href="produto.html" style="position: relative; top: 40px; left: -60px; padding: 15px 30px; background-color: #ff6600; color: white; text-decoration: none; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; z-index: 9999; transition: background-color 0.3s;">Menu</a>
+<a href="perfil.html" style="position: relative; top: 40px; right: -60px; padding: 15px 30px; background-color: #ff6600; color: white; text-decoration: none; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; z-index: 9999; transition: background-color 0.3s;">Perfil</a>
+ 
+    <header>
+        <h1>Publicar Produto</h1>
+    </header>
+
+    <main>
+        <form id="formProduto">
+            <input type="hidden" id="produtoId">
+            <input type="text" id="nome" placeholder="Nome do Produto" required>
+            <input type="text" id="cor" placeholder="Cor do Produto" required>
+            <input type="text" id="preco" placeholder="Preço (ex: 1000 Kz)" required>
+            <input type="text" id="local" placeholder="Localização (ex: Luanda)" required>
+            <input type="url" id="img" placeholder="URL da Imagem" required>
+            
+            <select id="publicidade">
+                <option value="false">Não</option>
+                <option value="true">Sim</option>
+            </select>
+            
+            <select id="estoque">
+                <option value="true">Disponível</option>
+                <option value="false">Indisponível</option>
+            </select>
+            <button type="submit">Salvar Produto</button>
+        </form>
+        <a href="index.html" class="link-voltar">🔙 Voltar</a>
+    </main>
+
+    <script>
+        document.getElementById("formProduto").addEventListener("submit", function(event) {
+            event.preventDefault();
+            let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+
+            let id = document.getElementById("produtoId").value || Date.now();
+            let produto = {
+                id,
+                nome: document.getElementById("nome").value,
+                cor: document.getElementById("cor").value,
+                preco: document.getElementById("preco").value,
+                local: document.getElementById("local").value,
+                img: document.getElementById("img").value,
+                estoque: document.getElementById("estoque").value === "true",
+                publicidade: document.getElementById("publicidade").value === "true"
+            };
+
+            produtos = produtos.filter(p => p.id !== id);
+            produtos.push(produto);
+            localStorage.setItem("produtos", JSON.stringify(produtos));
+
+            alert("Produto salvo com sucesso!");
+            window.location.href = "index.html";
+        });
+    </script>
+
+</body>
+</html>

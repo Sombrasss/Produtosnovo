@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Produto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        header { background-color: #ff6600; color: white; padding: 20px; font-size: 24px; }
+        main { padding: 20px; }
+        form { background: white; padding: 30px; width: 250px; margin: auto; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #ff6600; border-radius: 5px; }
+        button { padding: 10px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-salvar { background: #ff6600; color: white; }
+        .btn-apagar { background: red; color: white; margin-top: 10px; }
+        .btn-salvar:hover { background: #e55b00; }
+        .btn-apagar:hover { background: darkred; }
+        .link-voltar { display: block; margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Editar Produto</h1>
+    </header>
+
+    <main>
+        <form id="formProduto">
+            <input type="hidden" id="produtoId">
+            <input type="text" id="nome" placeholder="Nome do Produto" required>
+            <input type="text" id="cor" placeholder="Cor do Produto" required>
+            <input type="text" id="preco" placeholder="Preço (ex: 1000 Kz)" required>
+            <input type="text" id="local" placeholder="Localização (ex: Luanda)" required>
+            <input type="url" id="img" placeholder="URL da Imagem" required>
+            
+            <select id="publicidade">
+                <option value="false">Não</option>
+                <option value="true">Sim</option>
+            </select>
+            
+            <select id="estoque">
+                <option value="true">Disponível</option>
+                <option value="false">Indisponível</option>
+            </select>
+            <button type="submit" class="btn-salvar">Salvar Alterações</button>
+            <button type="button" class="btn-apagar" id="btnApagar">Apagar Produto</button>
+        </form>
+        <a href="index.html" class="link-voltar">🔙 Voltar</a>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const produtoId = urlParams.get("id");
+
+        if (!produtoId) {
+            alert("Produto não encontrado!");
+            window.location.href = "index.html";
+        }
+
+        let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+        let produto = produtos.find(p => p.id == produtoId);
+
+        if (!produto) {
+            alert("Produto não encontrado!");
+            window.location.href = "index.html";
+        } else {
+            document.getElementById("produtoId").value = produto.id;
+            document.getElementById("nome").value = produto.nome;
+            document.getElementById("cor").value = produto.cor;
+            document.getElementById("preco").value = produto.preco;
+            document.getElementById("local").value = produto.local;
+            document.getElementById("img").value = produto.img;
+            document.getElementById("estoque").value = produto.estoque.toString();
+            document.getElementById("publicidade").value = produto.publicidade.toString();  // Atualiza a publicidade
+        }
+
+        document.getElementById("formProduto").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            produto.nome = document.getElementById("nome").value;
+            produto.cor = document.getElementById("cor").value;
+            produto.preco = document.getElementById("preco").value;
+            produto.local = document.getElementById("local").value;
+            produto.img = document.getElementById("img").value;
+            produto.estoque = document.getElementById("estoque").value === "true";
+            produto.publicidade = document.getElementById("publicidade").value === "true";  // Atualiza a publicidade
+
+            produtos = produtos.map(p => p.id == produtoId ? produto : p);
+            localStorage.setItem("produtos", JSON.stringify(produtos));
+
+            alert("Produto atualizado com sucesso!");
+            window.location.href = "index.html";
+        });
+
+        document.getElementById("btnApagar").addEventListener("click", function() {
+            if (confirm("Tem certeza que deseja apagar este produto?")) {
+                produtos = produtos.filter(p => p.id != produtoId);
+                localStorage.setItem("produtos", JSON.stringify(produtos));
+                alert("Produto apagado!");
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+
+</body>
+</html>

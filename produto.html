@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Produtos</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        header { background-color: #ff6600; color: white; padding: 20px; font-size: 24px; }
+        main { padding: 20px; }
+        #busca { width: 80%; max-width: 400px; padding: 10px; font-size: 16px; border: 2px solid #ff6600; border-radius: 5px; margin-bottom: 20px; }
+        .produtos { display: flex; flex-wrap: wrap; justify-content: center; }
+        .produto { background: white; padding: 15px; margin: 15px; width: 250px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: left; }
+        .produto img { width: 100%; border-radius: 10px; }
+        .botao { display: block; margin-top: 10px; padding: 10px; background: #ff6600; color: white; text-decoration: none; border-radius: 5px; text-align: center; }
+        .botao:hover { background: #e55b00; }
+        footer { margin-top: 20px; background-color: #222; color: white; padding: 10px; }
+        .link-publicar { display: block; margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+<a href="produto.html" style="position: relative; top: 40px; left: -60px; padding: 15px 30px; background-color: #ff6600; color: white; text-decoration: none; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; z-index: 9999; transition: background-color 0.3s;">Menu</a>
+<a href="perfil.html" style="position: relative; top: 40px; right: -60px; padding: 15px 30px; background-color: #ff6600; color: white; text-decoration: none; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; z-index: 9999; transition: background-color 0.3s;">Perfil</a>
+    
+    
+    
+    <header>
+        <h1>Buscar Produtos</h1>
+    </header>
+
+    <main>
+        <input type="text" id="busca" placeholder="Buscar por nome, cor, preço ou localização">
+        <div class="produtos" id="produtos"></div>
+        <a href="publicar.html" class="link-publicar">➕ Publicar Novo Produto</a>
+    </main>
+
+    <footer>
+        <p>© 2025 - Loja de Afiliados</p>
+        <p>© Suriana Express</p>
+  
+        
+    </footer>
+
+    <script>
+        function carregarProdutos(filtro = "") {
+            const produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+            const container = document.getElementById("produtos");
+            container.innerHTML = "";
+
+            // Filtrar produtos em publicidade
+            const produtosPublicidade = produtos.filter(p => p.publicidade === true);
+            const produtosNormais = produtos.filter(p => p.publicidade === false);
+
+            // Exibir produtos com publicidade primeiro, seguidos dos normais
+            [...produtosPublicidade, ...produtosNormais].filter(produto => 
+                produto.nome.toLowerCase().includes(filtro.toLowerCase()) ||
+                produto.cor.toLowerCase().includes(filtro.toLowerCase()) ||
+                produto.preco.includes(filtro) ||
+                produto.local.toLowerCase().includes(filtro.toLowerCase())
+            ).forEach(produto => {
+                let div = document.createElement("div");
+                div.classList.add("produto");
+                div.innerHTML = `
+                    <img src="${produto.img}" alt="${produto.nome}">
+                    <h2>${produto.nome}</h2>
+                    <p><strong>Cor:</strong> ${produto.cor}</p>
+                    <p><strong>Preço:</strong> ${produto.preco}</p>
+                    <p><strong>Localização:</strong> ${produto.local}</p>
+                    <p><strong>Disponível:</strong> ${produto.estoque ? "Sim ✅" : "Não ❌"}</p>
+                    ${produto.publicidade ? '<p style="color: green;"><strong>Publicidade 🔥</strong></p>' : ''}
+                    <a href="comprar.html?id=${produto.id}" class="botao">Comprar</a>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        document.getElementById("busca").addEventListener("input", function() {
+            carregarProdutos(this.value);
+        });
+
+        // Carregar os produtos quando a página for carregada
+        document.addEventListener("DOMContentLoaded", function() {
+            carregarProdutos();
+        });
+    </script>
+
+</body>
+</html>

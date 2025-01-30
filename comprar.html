@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar Produto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        header { background-color: #ff6600; color: white; padding: 20px; font-size: 24px; }
+        main { padding: 20px; max-width: 800px; margin: auto; background-color: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .produto-info img { width: 100%; max-width: 400px; border-radius: 10px; }
+        .produto-info { margin-bottom: 20px; text-align: left; }
+        .produto-info h2 { font-size: 24px; margin-bottom: 10px; }
+        .botao { padding: 10px 20px; background: #ff6600; color: white; text-decoration: none; border-radius: 5px; cursor: pointer; display: inline-block; }
+        .botao:hover { background: #e55b00; }
+    </style>
+</head>
+<body>
+<a href="produto.html" style="position: relative; top: 40px; left: -60px; padding: 15px 30px; background-color: #ff6600; color: white; text-decoration: none; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; z-index: 9999; transition: background-color 0.3s;">Menu</a>
+<a href="perfil.html" style="position: relative; top: 40px; right: -60px; padding: 15px 30px; background-color: #ff6600; color: white; text-decoration: none; border: none; border-radius: 50px; cursor: pointer; font-size: 18px; z-index: 9999; transition: background-color 0.3s;">Perfil</a>
+     <header>
+        <h1>Comprar Produto</h1>
+    </header>
+
+    <main>
+        <div id="produtoDetalhes" class="produto-info"></div>
+        <a href="index.html" class="botao">Voltar para a lista de produtos</a>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const produtoId = urlParams.get("id");
+
+        if (!produtoId) {
+            alert("Produto não encontrado!");
+            window.location.href = "index.html";
+        }
+
+        let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+        let produto = produtos.find(p => p.id == produtoId);
+
+        if (!produto) {
+            alert("Produto não encontrado!");
+            window.location.href = "index.html";
+        } else {
+            const container = document.getElementById("produtoDetalhes");
+            container.innerHTML = `
+                <div class="produto-info">
+                    <img src="${produto.img}" alt="${produto.nome}">
+                    <h2>${produto.nome}</h2>
+                    <p><strong>Cor:</strong> ${produto.cor}</p>
+                    <p><strong>Preço:</strong> ${produto.preco}</p>
+                    <p><strong>Localização:</strong> ${produto.local}</p>
+                    <p><strong>Disponível:</strong> ${produto.estoque ? "Sim ✅" : "Não ❌"}</p>
+                    ${produto.publicidade ? '<p style="color: green;"><strong>Publicidade 🔥</strong></p>' : ''}
+                    <h3>Informações de Compra</h3>
+                    <p><strong>WhatsApp:</strong> <a href="https://wa.me/${produto.whatsapp}" target="_blank">${produto.whatsapp}</a></p>
+                    <p><strong>Formas de Pagamento:</strong> Banco X, PayPal, Mbway, etc.</p>
+                    <p><strong>Custo de Entrega:</strong> 500 Kz</p>
+                    <p><strong>Morada:</strong> ${produto.local}</p>
+                    <a href="whatsapp://send?text=Gostaria de comprar o produto ${produto.nome}" class="botao" target="_blank">Comprar via WhatsApp</a>
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+</html>
